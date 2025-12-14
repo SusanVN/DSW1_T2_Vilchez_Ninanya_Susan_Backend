@@ -6,9 +6,7 @@ using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ==========================
-// CARGA DE .ENV
-// ==========================
+
 var currentDir = Directory.GetCurrentDirectory();
 var envPath = Path.Combine(currentDir, "..", "..", ".env");
 
@@ -22,12 +20,10 @@ else
     Console.WriteLine(".env file not found. Connection may fail.");
 }
 
-// ==========================
-// SERVICIOS
-// ==========================
+
 builder.Services.AddControllers();
 
-// 👉 CORS (NECESARIO PARA FRONTEND)
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -39,22 +35,17 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Arquitectura
+
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
-// ❌ QUITAMOS Swagger
-// builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ==========================
-// PIPELINE
-// ==========================
+
 app.UseHttpsRedirection();
 
-// 👉 CORS
+
 app.UseCors("AllowAll");
 
 app.UseAuthorization();

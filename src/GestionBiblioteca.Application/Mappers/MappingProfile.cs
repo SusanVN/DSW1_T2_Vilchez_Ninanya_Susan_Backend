@@ -9,13 +9,11 @@ namespace GestionBiblioteca.Application.Mappers
     {
         public MappingProfile()
         {
-          
-            // Mapeo de BOOKS            
-            
-            // Entidad a DTO (Lectura/Salida)
+                             
+                        
             CreateMap<Book, BookDto>();
             
-            // DTO a Entidad (Creación/Actualización)
+            
             CreateMap<CreateBookDto, Book>()
                 
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -24,15 +22,12 @@ namespace GestionBiblioteca.Application.Mappers
 
 
             
-            // Mapeo de LOANS 
             
-
-            // Entidad a DTO (Lectura/Salida)
             CreateMap<Loan, LoanDto>()
                 
                 .ForMember(dest => dest.BookTitle, opt => opt.Ignore()); 
 
-            // DTO a Entidad (Creación)
+            
             CreateMap<CreateLoanDto, Loan>()
                 
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

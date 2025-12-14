@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GestionBiblioteca.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] // Ruta: api/Book
+    [Route("api/[controller]")] 
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
@@ -18,7 +18,7 @@ namespace GestionBiblioteca.API.Controllers
             _bookService = bookService;
         }
 
-        // GET: api/Book (Similar a GetAll de PetsController)
+        // GET: api/Book 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookDto>>> GetAll()
         {
@@ -26,7 +26,7 @@ namespace GestionBiblioteca.API.Controllers
             return Ok(books);
         }
 
-        // GET: api/Book/5 (Similar a GetById de PetsController)
+        // GET: api/Book/id 
         [HttpGet("{id}")]
         public async Task<ActionResult<BookDto>> GetById(int id)
         {
@@ -40,12 +40,12 @@ namespace GestionBiblioteca.API.Controllers
             }
             catch (NotFoundException ex)
             {
-                 // Manejo de excepción de dominio, similar a GetByOwnerId con try-catch
+                 
                 return NotFound(new { message = ex.Message });
             }
         }
         
-        // GET: api/Book/isbn/978-0321765723 (Similar a GetBySpecies o GetByOwnerId)
+        // GET: api/Book/isbn/{isbn}
         [HttpGet("isbn/{isbn}")]
         public async Task<ActionResult<BookDto>> GetByISBN(string isbn)
         {
@@ -56,7 +56,7 @@ namespace GestionBiblioteca.API.Controllers
             return Ok(book);
         }
 
-        // POST: api/Book (Similar a Create de PetsController)
+        // POST: api/Book 
         [HttpPost]
         public async Task<ActionResult<BookDto>> Create([FromBody] CreateBookDto dto)
         {
@@ -67,22 +67,22 @@ namespace GestionBiblioteca.API.Controllers
             try
             {
                 var createdBook = await _bookService.CreateBookAsync(dto);
-                // Retorna 201 CreatedAtAction
+                
                 return CreatedAtAction(nameof(GetById), new { id = createdBook.Id }, createdBook);
             }
             catch (DuplicateEntityException ex)
             {
-                // Replicamos el manejo de errores de validación de unicidad
+                
                 return BadRequest(new { message = ex.Message }); 
             }
             catch (BusinessRuleException ex)
             {
-                // Captura si hay alguna otra regla de negocio
+                
                 return BadRequest(new { message = ex.Message });
             }
         }
 
-        // PUT: api/Book/5 (Similar a Update de PetsController)
+        // PUT: api/Book/5 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] CreateBookDto dto)
         {
@@ -93,7 +93,7 @@ namespace GestionBiblioteca.API.Controllers
             try
             {
                 await _bookService.UpdateBookAsync(id, dto);
-                // Retornamos 204 No Content para operaciones PUT exitosas que no devuelven cuerpo
+                
                 return NoContent(); 
             }
             catch (NotFoundException ex)
@@ -102,7 +102,7 @@ namespace GestionBiblioteca.API.Controllers
             }
             catch (DuplicateEntityException ex)
             {
-                 // Si el ISBN duplicado ocurre durante la actualización
+                 
                 return BadRequest(new { message = ex.Message });
             }
             catch (BusinessRuleException ex)
@@ -111,7 +111,7 @@ namespace GestionBiblioteca.API.Controllers
             }
         }
 
-        // DELETE: api/Book/5 (Similar a Delete de PetsController)
+        // DELETE: api/Book/5 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -120,10 +120,10 @@ namespace GestionBiblioteca.API.Controllers
                 var success = await _bookService.DeleteBookAsync(id);
                 if (!success)
                 {
-                    // Si el servicio no pudo eliminar (ej. no encontrado)
+                    
                     return NotFound(new { message = $"Libro con ID {id} no encontrado." });
                 }
-                // Retorna 204 No Content
+                
                 return NoContent();
             }
             catch (NotFoundException ex)
@@ -132,7 +132,7 @@ namespace GestionBiblioteca.API.Controllers
             }
             catch (BusinessRuleException ex)
             {
-                // Captura si el libro tiene préstamos activos (Regla de Negocio)
+                
                 return BadRequest(new { message = ex.Message });
             }
         }

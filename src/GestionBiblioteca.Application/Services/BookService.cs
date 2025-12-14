@@ -36,12 +36,12 @@ namespace GestionBiblioteca.Application.Services
 
         public async Task<BookDto> CreateBookAsync(CreateBookDto dto)
         {
-            // Regla: El ISBN debe ser único
+           
             var existing = await _unitOfWork.Books.GetByISBNAsync(dto.ISBN);
             if (existing != null) throw new DuplicateEntityException("Libro", "ISBN", dto.ISBN);
 
             var book = _mapper.Map<Book>(dto);
-            // La fecha CreatedAt se asigna en el constructor de la entidad o aquí si el mapper la ignora.
+            
             book.CreatedAt = DateTime.Now; 
 
             var created = await _unitOfWork.Books.AddAsync(book);
@@ -54,7 +54,7 @@ namespace GestionBiblioteca.Application.Services
             var book = await _unitOfWork.Books.GetByIdAsync(id);
             if (book == null) throw new NotFoundException("Libro", id);
 
-            // Validación de unicidad si se intenta cambiar el ISBN
+            
             var existingWithIsbn = await _unitOfWork.Books.GetByISBNAsync(dto.ISBN);
             if (existingWithIsbn != null && existingWithIsbn.Id != id)
                 throw new DuplicateEntityException("Libro", "ISBN", dto.ISBN);
@@ -74,13 +74,13 @@ namespace GestionBiblioteca.Application.Services
 
         public async Task<BookDto?> GetBookByISBNAsync(string isbn)
         {
-            // Llama al repositorio para obtener la entidad
+            
             var book = await _unitOfWork.Books.GetByISBNAsync(isbn);
             
-            // Retorna null si no se encuentra (la capa de la API manejará el NotFound)
+            
             if (book == null) return null;
             
-            // Mapea y retorna el DTO
+            
             return _mapper.Map<BookDto>(book);
         }
     }

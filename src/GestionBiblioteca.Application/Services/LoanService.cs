@@ -27,7 +27,7 @@ namespace GestionBiblioteca.Application.Services
             var loans = await _unitOfWork.Loans.GetActiveLoansAsync();
             var dtos = _mapper.Map<IEnumerable<LoanDto>>(loans);
             
-            // Asignar títulos para el DTO, asumiendo que el repositorio incluyó el Book
+            
             var loanList = loans.ToList();
             var dtoList = dtos.ToList();
 
@@ -45,10 +45,10 @@ namespace GestionBiblioteca.Application.Services
                 var book = await _unitOfWork.Books.GetByIdAsync(dto.BookId);
                 if (book == null) throw new NotFoundException("Libro", dto.BookId);
 
-                // Regla de Negocio: No se puede prestar si el Stock es 0
+                
                 if (book.Stock <= 0) throw new BusinessRuleException("Stock", "No hay stock disponible para el libro solicitado.");
 
-                // Regla de Negocio: Al registrar, el Stock disminuye en 1
+                
                 book.Stock--;
                 await _unitOfWork.Books.UpdateAsync(book);
 
@@ -81,11 +81,11 @@ namespace GestionBiblioteca.Application.Services
                 if (loan.Book == null) throw new NotFoundException("Libro Asociado al Préstamo", loan.BookId);
 
 
-                // Aplicar lógica de dominio: Marcar el préstamo como devuelto
+                
                 loan.MarkAsReturned();
                 await _unitOfWork.Loans.UpdateAsync(loan);
 
-                // Regla de Negocio: Al devolver, el Stock aumenta en 1
+                
                 loan.Book.Stock++;
                 await _unitOfWork.Books.UpdateAsync(loan.Book);
                 
